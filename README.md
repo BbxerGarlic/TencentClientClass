@@ -79,9 +79,10 @@
 
 
 直连、会话搜索
+没什么好说的，直接用的OnlineSession的接口
+
 ![image-20241128015253120](https://github.com/user-attachments/assets/819e41c1-1f2c-4263-b079-08c67d4caaff)
 
-没什么好说的，直接用的OnlineSession的接口
 
 房间达到两个人就会开始倒计时，倒计时结束显示计分板
 
