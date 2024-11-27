@@ -26,6 +26,6 @@ void UTencentCppPickUpComponent::OnSphereBeginOverlap(UPrimitiveComponent* Overl
 		OnPickUp.Broadcast(Character);
 
 		// Unregister from the Overlap Event so it is no longer triggered
-		OnComponentBeginOverlap.RemoveAll(this);
+		//OnComponentBeginOverlap.RemoveAll(this);
 	}
 }

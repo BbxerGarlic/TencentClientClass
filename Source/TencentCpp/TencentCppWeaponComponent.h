@@ -49,6 +49,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
 
+	UFUNCTION(Server, Reliable)
+	void ServerFire(const FVector& SpawnLocation, const FRotator& SpawnRotation);
+
+	void ServerFire_Implementation(const FVector& SpawnLocation, const FRotator& SpawnRotation);
+
+
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()

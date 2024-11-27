@@ -66,3 +66,53 @@
 然后终于打包完成
 
 ![image-20241122211615855](https://github.com/user-attachments/assets/43b26aaa-c981-4504-96bb-3f2e8e45f232)
+
+## 第二周
+
+### 网络同步
+
+尝试了一下用蓝图+OnlineSession做一个局域网联机
+
+#### 功能
+
+
+
+![image-20241128015127434](C:\Users\ekamer\AppData\Roaming\Typora\typora-user-images\image-20241128015127434.png)
+
+直连、会话搜索
+
+没什么好说的，直接用的OnlineSession的接口
+
+![image-20241128015253120](C:\Users\ekamer\AppData\Roaming\Typora\typora-user-images\image-20241128015253120.png)
+
+房间达到两个人就会开始倒计时，倒计时结束显示计分板
+
+基本的网络同步、用PlayerState维护的分数，用GameInstance跨场景保存的名字，GameMode进行的流程控制，UMG计分板
+
+以及作业要求的计分系统，一开始变小的方块就是重要方块
+
+（图片左侧实际上是我用枪的模型代替了人物模型，折腾一晚上懒得导入其它模型了）
+
+#### 坑
+
+##### UE蓝图的异步
+
+![image-20241127115840119](C:\Users\ekamer\AppData\Roaming\Typora\typora-user-images\image-20241127115840119.png)
+
+FindSessions是一个异步方法，所以在它后面同步输出Results的个数，会是0
+
+![image-20241127120118888](C:\Users\ekamer\AppData\Roaming\Typora\typora-user-images\image-20241127120118888.png)
+
+这样输出就没问题
+
+##### UE同步问题
+
+这里出了很多问题，主要原因还是在一开始没搞懂他的同步机制和跨场景机制
+
+![img](https://pic4.zhimg.com/v2-60783129f61eb507a45e6c66404079ef_1440w.jpg)
+
+总结：同步方面应当尽量把客户端逻辑写在Controller的Event里，然后服务端广播，需要跨场景的重要信息可以使用GameInstance或者Subsystem进行存储（类似单例），也可以使用无缝加载
+
+
+
+

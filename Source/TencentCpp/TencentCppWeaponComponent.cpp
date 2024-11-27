@@ -18,6 +18,7 @@ UTencentCppWeaponComponent::UTencentCppWeaponComponent()
 {
 	// Default offset from the character location for projectiles to spawn
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
+
 }
 
 
@@ -36,15 +37,19 @@ void UTencentCppWeaponComponent::Fire()
 		{
 			APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
 			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
-			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
 			const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
-	
-			//Set Spawn Collision Handling Override
-			FActorSpawnParameters ActorSpawnParams;
-			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-	
-			// Spawn the projectile at the muzzle
-			World->SpawnActor<ATencentCppProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+
+			// Only execute on the server
+			if (GetOwner()->HasAuthority())
+			{
+				ServerFire(SpawnLocation, SpawnRotation);
+			}
+			else
+			{
+				// If client, request the server to fire
+				ServerFire(SpawnLocation, SpawnRotation);
+				UE_LOG(LogTemp, Warning, TEXT("Fire function called!"));
+			}
 		}
 	}
 	
@@ -65,6 +70,33 @@ void UTencentCppWeaponComponent::Fire()
 		}
 	}
 }
+
+
+void UTencentCppWeaponComponent::ServerFire_Implementation(const FVector& SpawnLocation, const FRotator& SpawnRotation)
+{
+	if (ProjectileClass != nullptr)
+	{
+		UWorld* const World = GetWorld();
+		if (World != nullptr)
+		{
+			FActorSpawnParameters ActorSpawnParams;
+			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
+			ActorSpawnParams.Owner = Character;
+
+			// Spawn the projectile on the server
+			ATencentCppProjectile* Bullet = World->SpawnActor<ATencentCppProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+
+			if (Bullet)
+			{
+				Bullet->SetInstigator(Character);
+			}
+			UE_LOG(LogTemp, Warning, TEXT("Bullet created!"));
+
+		}
+	}
+}
+
 
 bool UTencentCppWeaponComponent::AttachWeapon(ATencentCppCharacter* TargetCharacter)
 {
