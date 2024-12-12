@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "UDamageableInterface.h"
 #include "TencentCppCharacter.generated.h"
+
 
 class UInputComponent;
 class USkeletalMeshComponent;
@@ -17,13 +19,16 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
-class ATencentCppCharacter : public ACharacter
+class ATencentCppCharacter : public ACharacter, public IDamageableInterface
 {
 	GENERATED_BODY()
 
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Mesh, meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* Mesh1P;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
+	USkeletalMeshComponent* MeshMan;
 
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -47,6 +52,9 @@ class ATencentCppCharacter : public ACharacter
 	
 public:
 	ATencentCppCharacter();
+
+
+	virtual void ReceiveDamage_Implementation(float DamageAmount, ACharacter* SourceCharacter) override;
 
 protected:
 	/** Called for movement input */

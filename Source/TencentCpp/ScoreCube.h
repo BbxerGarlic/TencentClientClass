@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "UDamageableInterface.h"
 #include "ScoreCube.generated.h"
 
 UCLASS()
-class TENCENTCPP_API AScoreCube : public AActor
+class TENCENTCPP_API AScoreCube : public AActor, public IDamageableInterface
 {
 	GENERATED_BODY()
 	
@@ -23,6 +24,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void ReceiveDamage_Implementation(float DamageAmount, ACharacter* SourceCharacter) override;
 	
 	
 };

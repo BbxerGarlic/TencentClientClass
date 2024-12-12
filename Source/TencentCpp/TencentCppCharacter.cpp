@@ -35,7 +35,19 @@ ATencentCppCharacter::ATencentCppCharacter()
 	Mesh1P->CastShadow = false;
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
+	MeshMan = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh"));
+	MeshMan->SetOwnerNoSee(true);
+	MeshMan->SetupAttachment(FirstPersonCameraComponent);
+	MeshMan->bCastDynamicShadow = false;
+	MeshMan->CastShadow = false;
+	MeshMan->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
+
 }
+
+void ATencentCppCharacter::ReceiveDamage_Implementation(float DamageAmount, ACharacter* SourceCharacter)
+{
+}
+
 
 //////////////////////////////////////////////////////////////////////////// Input
 

@@ -26,3 +26,7 @@ void AScoreCube::Tick(float DeltaTime)
 
 }
 
+void AScoreCube::ReceiveDamage_Implementation(float DamageAmount, ACharacter* SourceCharacter)
+{
+}
+

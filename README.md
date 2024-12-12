@@ -3,6 +3,8 @@ https://github.com/user-attachments/assets/4629328c-9e65-4001-b7c8-64984c86d7c3
 
 成果展示
 
+
+
 ## 第一周
 
 ### 源码编译
@@ -99,6 +101,18 @@ https://github.com/user-attachments/assets/4629328c-9e65-4001-b7c8-64984c86d7c3
 
 #### 坑
 
+##### 生成实体只能在服务端
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212212208522.png)
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212212240760.png)
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212212302552.png)
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212212314408.png)
+
+在服务端生成后同步到客户端
+
 ##### UE蓝图的异步
 
 ![image-20241127115840119](https://github.com/user-attachments/assets/62dc1402-9040-46d0-a4b6-268ba226cf1e)
@@ -119,4 +133,101 @@ FindSessions是一个异步方法，所以在它后面同步输出Results的个�
 
 
 
+## 第三周
+
+考试+乱七八糟的东西，鸽了（）
+
+## 第四周
+
+![image-20241212212426368](C:\Users\ekamer\AppData\Roaming\Typora\typora-user-images\image-20241212212426368.png)
+
+### 登录界面
+
+之前已经实现了基本的会话连接，此处直接用GameInstance维护一个本地的账号验证map就可以（服务器验证也是一个道理，图省事直接做成本地的了）
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212212749352.png)
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212212958695.png)
+
+
+
+### 加载界面
+
+#### UI
+
+先用UMG搓一个UI
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212213102472.png)
+
+因为场景加载是离散的，为了好看一点就做个假进度条
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212213242353.png)
+
+因为一直在按deltaTime插值，所以最后会越来越慢，只需要加载完成的时候填满就好了。
+
+#### 主机
+
+UE没提供OpenLevel的Async版本，要用流式加载，不过因为我这项目加载几乎是瞬间，就直接做个假进度条凑合凑合舒服一点就行
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212213848055.png)
+
+#### 客户端
+
+客户端使用JoinSession，同样是连接处理完毕后瞬间加入（加入后会自动销毁UI），这里直接同步创建一个进度条
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212213941975.png)
+
+### 射击游戏操作面板
+
+#### 改成射线检测
+
+因为涉及击中目标准星要发生变化，所以生成子弹球就不太合适了
+
+改为射线检测（在服务端）
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212214807192.png)
+
+广播到客户端以显示弹道
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212214930887.png)
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212214913983.png)
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212215036896.png)
+
+#### 生命值和子弹数
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212214238991.png)
+
+依旧是先创建UI
+
+生命值和子弹数依旧记录在PlayerState里
+
+##### 生命值
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212215246776.png)
+
+生命值很好处理，只有两个玩家，似了一个直接调用结束
+
+##### 子弹数
+
+因为之前UE给的模板直接把Fire跟输入绑定了，所以懒得改代码直接给Fire加一个判断就好
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212215619207.png)
+
+又因为子弹数是写在蓝图里的，所以我们要开放给蓝图
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212220401144.png)
+
+设定为虚函数，直接在蓝图类里继承写个判断
+
+效果：
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212230426165.png)
+
+##### 准星
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241212231742982.png)
+
+没什么好说的，打到的时候通知给PlayerController再通知给UI
 

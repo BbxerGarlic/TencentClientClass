@@ -49,10 +49,25 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Damage")
+	bool CanFire();
+
+	virtual bool CanFire_Implementation();
+
 	UFUNCTION(Server, Reliable)
 	void ServerFire(const FVector& SpawnLocation, const FRotator& SpawnRotation);
-
 	void ServerFire_Implementation(const FVector& SpawnLocation, const FRotator& SpawnRotation);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerFireRaycast(const FVector& StartLocation, const FVector& EndLocation, const FRotator& FireRotation);
+
+
+	void ServerFireRaycast_Implementation(const FVector& StartLocation, const FVector& EndLocation, const FRotator& FireRotation);
+
+	UFUNCTION(Client, Reliable)
+	void ClientDrawDebugRay(const FVector& StartLocation, const FVector& EndLocation, const FColor& Color);
+
+	void ClientDrawDebugRay_Implementation(const FVector& StartLocation, const FVector& EndLocation, const FColor& Color);
 
 
 protected:
@@ -60,7 +75,7 @@ protected:
 	UFUNCTION()
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-private:
 	/** The Character holding this weapon*/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	ATencentCppCharacter* Character;
 };
