@@ -49,6 +49,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
 
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void FireByPos(const FVector& EndLocation);
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Damage")
 	bool CanFire();
 
@@ -76,6 +79,7 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	/** The Character holding this weapon*/
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	ATencentCppCharacter* Character;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
+	ACharacter* Character;
+
 };

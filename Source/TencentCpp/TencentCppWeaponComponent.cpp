@@ -71,6 +71,40 @@ UTencentCppWeaponComponent::UTencentCppWeaponComponent()
 //	}
 //}
 
+void UTencentCppWeaponComponent::FireByPos(const FVector& EndLocation)
+{
+
+	if (!CanFire())return;
+
+	UWorld* const World = GetWorld();
+	if (World != nullptr)
+	{
+		AController* PlayerController = Cast<AController>(Character->GetController());
+		const FRotator SpawnRotation = FRotator::ZeroRotator;
+		const FVector StartLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
+		
+
+		if (GetOwner()->HasAuthority())
+		{
+			// 服务器发射射线
+			ServerFireRaycast(StartLocation, EndLocation, SpawnRotation);
+
+		}
+		else
+		{
+			// 客户端请求服务器发射射线
+			ServerFireRaycast(StartLocation, EndLocation, SpawnRotation);
+		}
+	}
+	//}
+
+	if (FireSound != nullptr)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
+	}
+
+}
+
 void UTencentCppWeaponComponent::Fire()
 {
 	if (Character == nullptr || Character->GetController() == nullptr)
@@ -110,17 +144,9 @@ void UTencentCppWeaponComponent::Fire()
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
 	}
 	
-	// Try and play a firing animation if specified
-	if (FireAnimation != nullptr)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();
-		if (AnimInstance != nullptr)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-		}
-	}
 }
+
+
 
 bool UTencentCppWeaponComponent::CanFire_Implementation()
 {
@@ -144,7 +170,12 @@ void UTencentCppWeaponComponent::ServerFireRaycast_Implementation(const FVector&
 	// 发射射线进行碰撞检测
 	FHitResult HitResult;
 	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor(this->GetOwner());  // 使用 this 调用 GetOwner()
+
+
+	if (this->GetOwner() != nullptr){
+		CollisionParams.AddIgnoredActor(this->GetOwner());  // 使用 this 调用 GetOwner()
+			if(this->GetOwner()->GetOwner()!=nullptr)CollisionParams.AddIgnoredActor(this->GetOwner()->GetOwner());  // 使用 this 调用 GetOwner()
+	}
 
 	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, CollisionParams);
 
@@ -226,7 +257,12 @@ bool UTencentCppWeaponComponent::AttachWeapon(ATencentCppCharacter* TargetCharac
 
 	// Attach the weapon to the First Person Character
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
-	AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
+
+	if (ATencentCppCharacter* Player = Cast<ATencentCppCharacter>(Character)) {
+		AttachToComponent(Player->GetMeshMan(), AttachmentRules, FName(TEXT("GripPoint")));
+	}
+
+
 
 	// Set up action bindings
 	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))

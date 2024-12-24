@@ -89,6 +89,7 @@ void ATencentCppCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 void ATencentCppCharacter::Move(const FInputActionValue& Value)
 {
+	if (isDead)return;
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -102,6 +103,7 @@ void ATencentCppCharacter::Move(const FInputActionValue& Value)
 
 void ATencentCppCharacter::Look(const FInputActionValue& Value)
 {
+	if (isDead)return;
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
