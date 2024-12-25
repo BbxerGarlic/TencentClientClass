@@ -231,3 +231,30 @@ UE没提供OpenLevel的Async版本，要用流式加载，不过因为我这项�
 
 没什么好说的，打到的时候通知给PlayerController再通知给UI
 
+## 第五周
+
+### 动画
+
+上周已经做过了，这周微调了一下，加了个Died状态
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241225155511325.png)
+
+### 敌人AI
+
+稍微研究了一下行为树、黑板、AI感知
+
+#### 行为树和黑板
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241225155648016.png)
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241225160337701.png)
+
+#### 敌人Character和Controller
+
+新建了个敌人Character，实现接口
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241225155933025.png)
+
+Controller负责执行行为树和处理感知
+
+![](https://raw.githubusercontent.com/BbxerGarlic/BbxerGarlic/main/20241225160146926.png)
