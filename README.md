@@ -1,8 +1,10 @@
 https://github.com/user-attachments/assets/e76102f7-1b54-4ffb-b7d6-71856e1dc190
 
-
 成果展示
 
+https://github.com/user-attachments/assets/08d54336-028d-4a0f-bf3a-a3bec20bb427
+
+鱼群模拟
 
 
 ## 第一周
